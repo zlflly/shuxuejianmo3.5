@@ -1,0 +1,107 @@
+# 林火蔓延模型默认配置文件
+# Fire Spread Model Default Configuration
+
+# 基础模拟参数
+simulation:
+  time_step: 1.0                    # 时间步长 (分钟)
+  max_simulation_time: 4320         # 最大模拟时间 (72小时=4320分钟)
+  cell_size: 10.0                   # 元胞大小 (米)
+
+# 地形参数
+terrain:
+  type: "ideal"                     # 地形类型: "ideal" 或 "real"
+  width: 200                        # 网格宽度
+  height: 200                       # 网格高度
+  slope_angle_deg: 30.0             # 山坡角度 (度)
+  intersection_distance: 1000.0     # 到交线距离 (米)
+
+# 物理引擎参数
+physics:
+  # 基础蔓延速度 (m/min)
+  base_spread_rate: 0.5
+  
+  # 可燃物系数 (松树)
+  fuel_coefficient: 1.2
+  
+  # 坡度效应参数
+  slope_factor_a: 0.3
+  max_slope_deg: 55.0
+  
+  # 风效应参数
+  wind_speed_factor_c: 0.4
+  wind_speed_power_d: 1.5
+  wind_direction_factor_k: 3.0
+  
+  # 湿度效应参数
+  moisture_factor_b: 8.0
+  evaporation_coefficient: 0.001
+  
+  # 树冠火参数
+  crown_fire_multiplier: 3.0
+  critical_fire_intensity: 500.0   # kW/m
+
+# 环境条件
+environment:
+  # 风向风速 [风速x, 风速y, 风速z] (m/s)
+  wind_vector: [0.0, 0.0, 0.0]
+  
+  # 初始燃料参数
+  initial_fuel_load: 2.0            # kg/m²
+  initial_moisture_content: 0.12    # 小数形式
+  
+  # 燃料消耗速率
+  fuel_consumption_rate: 0.1        # kg/m²/min
+
+# 飞火参数
+spotting:
+  probability: 0.1                  # 飞火概率
+  max_distance: 500.0               # 最大飞火距离 (米)
+
+# 起火点配置
+ignition:
+  # 问题一A点：距离交线1000米的地面
+  point_A:
+    x: 1000.0
+    y: 1000.0
+    radius: 10.0
+  
+  # 问题一B点：距离交线500米的山坡
+  point_B:
+    x: 1000.0
+    y: 1500.0    # 1000 + 500
+    radius: 10.0
+
+# 模型简化开关 (针对不同问题)
+model_switches:
+  # 问题一：无风、理想地形
+  problem_1:
+    enable_wind: false
+    enable_crown_fire: false
+    enable_spotting: false
+    enable_dynamic_moisture: false
+  
+  # 问题二：有风、理想地形
+  problem_2:
+    enable_wind: true
+    enable_crown_fire: true
+    enable_spotting: false
+    enable_dynamic_moisture: true
+  
+  # 问题三：全功能、真实地形
+  problem_3:
+    enable_wind: true
+    enable_crown_fire: true
+    enable_spotting: true
+    enable_dynamic_moisture: true
+
+# 输出配置
+output:
+  save_interval: 60                 # 保存间隔 (分钟)
+  save_snapshots: [1440, 2880, 4320]  # 保存快照时间点 (24h, 48h, 72h)
+  output_dir: "results"
+  
+# 可视化配置
+visualization:
+  enable_animation: true
+  animation_interval: 60            # 动画帧间隔 (分钟)
+  color_scheme: "fire"              # 颜色方案 

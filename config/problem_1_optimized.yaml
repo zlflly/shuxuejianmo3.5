@@ -1,0 +1,98 @@
+# 问题一优化配置：调整参数以实现正常火灾蔓延
+# Problem 1 Optimized Configuration
+
+# 基础模拟参数
+simulation:
+  time_step: 1.0                    # 时间步长 (分钟)
+  max_simulation_time: 4320         # 最大模拟时间 (72小时=4320分钟)
+  cell_size: 10.0                   # 元胞大小 (米)
+
+# 地形参数
+terrain:
+  type: "ideal"                     # 地形类型: "ideal" 或 "real"
+  width: 800                        # 网格宽度 (扩大以容纳72小时蔓延)
+  height: 800                       # 网格高度 (8000m×8000m总范围)
+  slope_angle_deg: 30.0             # 山坡角度 (度)
+  intersection_distance: 4000.0     # 到交线距离 (米，网格中心位置)
+
+# 物理引擎参数 (采用激进参数以确保正常蔓延)
+physics:
+  # 基础蔓延速度 (m/min) - 采用激进设置
+  base_spread_rate: 3.0
+  
+  # 可燃物系数 (松树) - 采用激进设置
+  fuel_coefficient: 4.0
+  
+  # 坡度效应参数 - 增强坡度效应
+  slope_factor_a: 0.5
+  max_slope_deg: 55.0
+  
+  # 风效应参数 - 问题一无风，但保留
+  wind_speed_factor_c: 0.4
+  wind_speed_power_d: 1.5
+  wind_direction_factor_k: 3.0
+  
+  # 湿度效应参数 - 采用激进设置
+  moisture_factor_b: 3.0            # 大幅降低湿度阻抗
+  evaporation_coefficient: 0.01     # 启用动态湿度但加快干燥
+  
+  # 点燃参数 - 关键优化
+  base_ignition_energy: 50.0        # 降低点燃阈值
+  ignition_moisture_factor: 1.0     # 大幅降低含水量影响
+  
+  # 能量传递优化 - 关键参数
+  energy_transfer_multiplier: 20.0  # 能量传递放大系数
+  min_energy_transfer: 2.0          # 最小能量传递保证
+  
+  # 树冠火参数 - 问题一关闭
+  crown_fire_multiplier: 3.0
+  critical_fire_intensity: 999999.0  # 极高阈值，关闭树冠火
+
+# 环境条件
+environment:
+  # 风向风速 - 问题一无风
+  wind_vector: [0.0, 0.0, 0.0]
+  
+  # 初始燃料参数 - 采用激进设置
+  initial_fuel_load: 3.0            # 增加燃料载量
+  initial_moisture_content: 0.08    # 降低含水量
+  
+  # 燃料消耗速率 - 延长燃烧时间
+  fuel_consumption_rate: 0.03       # 降低消耗速率
+
+# 飞火参数 - 问题一关闭
+spotting:
+  probability: 0.0                  # 关闭飞火
+  max_distance: 500.0
+
+# 起火点配置 (调整为新网格: 800×800，intersection_distance=4000m)
+ignition:
+  # 问题一A点：在平地上，距离分界线1000米
+  point_A:
+    position: [4000.0, 3000.0, 0.0]    # 3D坐标，平地z=0
+    radius: 15.0                       # 稍大的起火半径
+  
+  # 问题一B点：在山坡上，距离分界线500米
+  point_B:
+    position: [4000.0, 4500.0, 288.7]  # 3D坐标，山坡z=288.7m
+    radius: 15.0                       # 稍大的起火半径
+
+# 模型简化开关 - 问题一设置
+model_switches:
+  problem_1:
+    enable_wind: false
+    enable_crown_fire: false
+    enable_spotting: false
+    enable_dynamic_moisture: false
+
+# 输出配置
+output:
+  save_interval: 60                 # 保存间隔 (分钟)
+  save_snapshots: [1440, 2880, 4320]  # 保存快照时间点 (24h, 48h, 72h)
+  output_dir: "results"
+  
+# 可视化配置
+visualization:
+  enable_animation: true
+  animation_interval: 60            # 动画帧间隔 (分钟)
+  color_scheme: "fire"              # 颜色方案 

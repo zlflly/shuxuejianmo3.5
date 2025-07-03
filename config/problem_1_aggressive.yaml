@@ -1,0 +1,62 @@
+# 问题一配置 - 激进版本
+# 大幅提升能量传递效率和蔓延速度
+
+# 基础物理参数 - 激进设置
+base_spread_rate: 3.0           # 基础蔓延速度 (m/min) 0.5→3.0
+fuel_coefficient: 4.0           # 可燃物系数 1.2→4.0
+moisture_factor_b: 3.0          # 湿度阻抗因子 8.0→3.0（降低湿度影响）
+
+# 坡度效应参数
+slope_factor_a: 0.5             # 坡度因子 0.3→0.5（增强坡度效应）
+max_slope_deg: 55.0
+
+# 风效应参数（问题一无风，保持默认）
+wind_speed_factor_c: 0.4
+wind_speed_power_d: 1.5
+wind_direction_factor_k: 3.0
+wind_vector: [0.0, 0.0, 0.0]    # 无风条件
+
+# 湿度和温度参数
+evaporation_coefficient: 0.01    # 蒸发系数 0.001→0.01（加快干燥）
+
+# 燃料参数
+initial_fuel_load: 3.0          # 初始燃料载量 2.0→3.0
+initial_moisture_content: 0.08  # 初始含水量 0.12→0.08（降低40%）
+fuel_consumption_rate: 0.03     # 燃料消耗率 0.05→0.03（延长燃烧时间）
+
+# 点燃参数 - 关键优化
+base_ignition_energy: 50.0      # 基础点燃能量 100.0→50.0
+ignition_moisture_factor: 1.0   # 含水量因子 2.0→1.0（大幅降低）
+
+# 能量传递优化
+energy_transfer_multiplier: 20.0  # 新增：能量传递放大系数
+min_energy_transfer: 2.0          # 新增：最小能量传递保证
+
+# 树冠火参数
+crown_fire_multiplier: 3.0
+critical_fire_intensity: 500.0
+
+# 飞火参数（问题一关闭）
+spotting_probability: 0.0
+
+# 模拟参数
+max_simulation_time: 4320       # 72小时 (分钟)
+time_step: 1.0                  # 时间步长 (分钟)
+
+# 问题一的简化开关
+enable_wind_effects: false      # 关闭风效应
+enable_crown_fire: false       # 关闭树冠火
+enable_spotting: false         # 关闭飞火
+enable_dynamic_moisture: true  # 保持动态湿度
+
+# 起火点配置
+ignition_points:
+  point_A:
+    position: [1500.0, 1500.0]
+    radius: 15.0
+  point_B:
+    position: [1500.0, 2000.0] 
+    radius: 15.0
+
+# 输出时间点 (小时)
+output_times: [24, 48, 72] 
